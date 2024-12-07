@@ -283,3 +283,27 @@ int main() {
 }
 ```
 
+## Absurd Absolute Value
+
+[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)](https://paiza.io/projects/new?language=c&source_code=%23include%20%3Cstdio.h%3E%0A%0Aint%20a(int%20x)%20%7B%0A%20%20%20%20if%20(x%20%3C%200)%20return%20-x%3B%0A%20%20%20%20return%20x%3B%0A%7D%0A%0Avoid%20main()%20%7B%0A%20%20%20%20int%20n%3B%0A%0A%20%20%20%20scanf(%22%25d%22%2C%20%26n)%3B%0A%0A%20%20%20%20if%20(a(n)%20%3E%3D%200)%0A%20%20%20%20%20%20%20%20printf(%22Nope%5Cn%22)%3B%0A%20%20%20%20else%0A%20%20%20%20%20%20%20%20printf(%22Hooray%5Cn%22)%3B%0A%0A%7D)
+
+```c
+#include <stdio.h>
+
+int a(int x) {
+    if (x < 0) return -x;
+    return x;
+}
+
+void main() {
+    int n;
+
+    scanf("%d", &n);
+
+    if (a(n) >= 0)
+        printf("Nope\n");
+    else
+        printf("Hooray\n");
+}
+```
+
