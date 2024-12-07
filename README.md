@@ -4,7 +4,8 @@ Each of the following programs is a challenge. Your task is to find the input th
 
 ## Bit Twister
 
-[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)](https://paiza.io/projects/new?language=c&source_code=%23include%20%3Cstdio.h%3E%0A%23include%20%3Climits.h%3E%0A%0Achar%20v%5B256%5D%3B%0A%0Aint%20main()%20%7B%0A%20%20%20%20int%20n%3B%0A%20%20%20%20scanf(%22%25d%22%2C%20%26n)%3B%0A%0A%20%20%20%20unsigned%20char%20x%20%3D%201%3B%0A%0A%20%20%20%20for(int%20i%3D0%3B%20i%3C2*n%2B1%3B%20i%2B%2B)%20%7B%0A%20%20%20%20%20%20%20%20v%5Bx%20%5E%20128%5D%3D1%3B%0A%20%20%20%20%20%20%20%20if(!((x%20%3C%3C%3D%201)%20%26%202))%20x%2B%2B%3B%0A%20%20%20%20%20%20%20%20if(v%5Bx%20%5E%20128%5D)%20x%20%5E%3D%201%3B%0A%20%20%20%20%20%20%20%20if(x%20%26%26%20v%5Bx%20%5E%20128%5D)%20break%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20for(int%20i%3D0%3B%20i%3Csizeof(v)%3B%20i%2B%2B)%20%7B%0A%20%20%20%20%20%20%20%20if(!v%5Bi%5D%20%26%26%20i%20!%3D%20n)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20printf(%22Nope%5Cn%22)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%200%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%0A%20%20%20%20printf(%22Hooray%5Cn%22)%3B%0A%20%20%20%20return%201%3B%0A%7D)
+[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)](https://paiza.io/projects/new?language=c&source_code=%23include%20%3Cstdio.h%3E%0A%23include%20%3Climits.h%3E%0A%0Achar%20v%5B256%5D%3B%0A%0Aint%20main%28%29%20%7B%0A%20%20%20%20int%20n%3B%0A%20%20%20%20scanf%28%22%25d%22%2C%20%26n%29%3B%0A%0A%20%20%20%20unsigned%20char%20x%20%3D%201%3B%0A%0A%20%20%20%20for%28int%20i%3D0%3B%20i%3C2%2An%2B1%3B%20i%2B%2B%29%20%7B%0A%20%20%20%20%20%20%20%20v%5Bx%20%5E%20128%5D%3D1%3B%0A%20%20%20%20%20%20%20%20if%28%21%28%28x%20%3C%3C%3D%201%29%20%26%202%29%29%20x%2B%2B%3B%0A%20%20%20%20%20%20%20%20if%28v%5Bx%20%5E%20128%5D%29%20x%20%5E%3D%201%3B%0A%20%20%20%20%20%20%20%20if%28x%20%26%26%20v%5Bx%20%5E%20128%5D%29%20break%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20for%28int%20i%3D0%3B%20i%3Csizeof%28v%29%3B%20i%2B%2B%29%20%7B%0A%20%20%20%20%20%20%20%20if%28%21v%5Bi%5D%20%26%26%20i%20%21%3D%20n%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20printf%28%22Nope%5Cn%22%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%200%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%0A%20%20%20%20printf%28%22Hooray%5Cn%22%29%3B%0A%20%20%20%20return%201%3B%0A%7D%0A)
+
 
 ```c
 #include <stdio.h>
@@ -282,3 +283,4 @@ int main() {
     return 0;
 }
 ```
+
