@@ -259,3 +259,26 @@ int main() {
         printf("Nope\n");
 }
 ```
+
+## Inequality
+
+[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)](https://paiza.io/projects/new?language=c&source_code=%23include%20%3Cstdio.h%3E%0A%23include%20%3Cmath.h%3E%0A%0Aint%20main()%20%7B%0A%20%20%20%20float%20a%3B%0A%0A%20%20%20%20scanf(%22%25f%22%2C%20%26a)%3B%0A%0A%20%20%20%20if%20(2%20*%20a%20!%3D%20a%20%2B%20a)%20%7B%0A%20%20%20%20%20%20%20%20printf(%22Hooray%5Cn%22)%3B%0A%20%20%20%20%7D%20else%20%20%7B%0A%20%20%20%20%20%20%20%20printf(%22Nope%5Cn%22)%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20return%200%3B%0A%7D)
+
+```c
+#include <stdio.h>
+#include <math.h>
+
+int main() {
+    float a;
+
+    scanf("%f", &a);
+
+    if (2 * a != a + a) {
+        printf("Hooray\n");
+    } else {
+        printf("Nope\n");
+    }
+
+    return 0;
+}
+```
