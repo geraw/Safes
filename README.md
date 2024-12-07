@@ -209,7 +209,9 @@ int main() {
 
 ## Matthew 18:15
 
-[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)]([https://paiza.io/projects/new?language=c&source_code=%23include%20<stdio.h>%0A%23include%20<string.h>%0A%0A%23define%20Matthew_18_15%20"If%20your%20brother%20or%20sister%20sins,%20go%20and%20point%20out%20their%20fault,%20just%20between%20the%20two%20of%20you.%20If%20they%20listen%20to%20you,%20you%20have%20won%20them%20over."%0A%0Aint%20main()%20%7B%0A%20%20%20%20char%20str1%5B%5D%20%3D%20Matthew_18_15;%20%0A%20%20%20%20char%20str2%5B%5D%20%3D%20Matthew_18_15;%0A%0A%20%20%20%20int%20n;%0A%0A%20%20%20%20scanf("%25d",%20%26n);%0A%0A%20%20%20%20if(%20n%20>-%200%20%26%26%20n%20<%20sizeof(str1)%20)%20%0A%20%20%20%20%20%20%20%20str1%5Bn%5D%3Dstr2%5Bn%5D%3D%27*%27;%0A%0A%20%20%20%20if%20(strcmp(str1,str2)%20%3D%3D%200)%0A%20%20%20%20%20%20%20%20printf("Nope%5Cn");%0A%20%20%20%20else%0A%20%20%20%20%20%20%20%20printf("Hooray%5Cn");%0A%7D)
+[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)](https://paiza.io/projects/new?language=c&source_code=%23include%20<stdio.h>%0A%23include%20<string.h>%0A%0A%23define%20Matthew_18_15%20"If%20your%20brother%20or%20sister%20sins,%20go%20and%20point%20out%20their%20fault,%20just%20between%20the%20two%20of%20you.%20If%20they%20listen%20to%20you,%20you%20have%20won%20them%20over."%0A%0Aint%20main()%20%7B%0A%20%20%20%20char%20str1%5B%5D%20%3D%20Matthew_18_15;%20%0A%20%20%20%20char%20str2%5B%5D%20%3D%20Matthew_18_15;%0A%0A%20%20%20%20int%20n;%0A%0A%20%20%20%20scanf("%25d",%20%26n);%0A%0A%20%20%20%20if(%20n%20>-%200%20%26%26%20n%20<%20sizeof(str1)%20)%20%0A%20%20%20%20%20%20%20%20str1%5Bn%5D%3Dstr2%5Bn%5D%3D%27*%27;%0A%0A%20%20%20%20if%20(strcmp(str1,str2)%20%3D%3D%200)%0A%20%20%20%20%20%20%20%20printf("Nope%5Cn");%0A%20%20%20%20else%0A%20%20%20%20%20%20%20%20printf("Hooray%5Cn");%0A%7D)
+
+
 ```c
 #include <stdio.h>
 #include <string.h>
