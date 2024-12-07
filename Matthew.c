@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define Matthew_18_15 "If your brother or sister sins, go and point out their fault, just between the two of you. If they listen to you, you have won them over."
-
+#define Matthew_18_15 "If your brother sins against you, go and confront him privately. If he listens to you, you have won your brother over. If your brother or sister sins, go and point out their fault, just between the two of you. If they listen to you, you have won them over"
 
 void main() {
     char str1[] = Matthew_18_15; 
