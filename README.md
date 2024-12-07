@@ -102,20 +102,21 @@ int main() {
 
 ## Absurd
 
-[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)](https://paiza.io/projects/new?language=c&source_code=%23include%20%3Cstdio.h%3E%0A%0Aint%20main()%20%7B%0A%09int%20n%3B%0A%09scanf(%22%25d%22%2C%20%26n)%3B%0A%09if%20(abs(n)%3E%3D0)%0A%09%09printf(%22Nope%5Cn%22)%3B%0A%09else%0A%09%09printf(%22Hooray%5Cn%22)%3B%0A%7D)
+[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)](https://paiza.io/projects/new?language=c&source_code=%23include%20%3Cstdio.h%3E%0A%0Aint%20main%28%29%20%7B%0A%09int%20n%3B%0A%09%0A%09scanf%28%22%25d%22%2C%20%26n%29%3B%0A%09sprintf%28%26n%2C%22%25d%22%2Cabs%28n%3C%3C1%29%29%3B%0A%0A%09if%20%28n%20%3E0%20%26%26%20%28%28char%20%2A%29%26n%29%5B0%5D%20%21%3D%20%27-%27%29%0A%09%09printf%28%22Nope%5Cn%22%29%3B%0A%09else%0A%09%09printf%28%22Hooray%5Cn%22%29%3B%0A%7D)
 
 ```c
 #include <stdio.h>
 
 int main() {
-    int n;
+	int n;
+	
+	scanf("%d", &n);
+	sprintf(&n,"%d",abs(n<<1));
 
-    scanf("%d", &n);
-
-    if (abs(n)>=0)
-        printf("Nope\n");
-    else
-        printf("Hooray\n");
+	if (n >0 && ((char *)&n)[0] != '-')
+		printf("Nope\n");
+	else
+		printf("Hooray\n");
 }
 ```
 
