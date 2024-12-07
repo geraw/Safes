@@ -234,5 +234,27 @@ int main() {
 }
 ```
 
+## Buffer Overflow Exploit
+
+[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)](https://paiza.io/projects/new?language=c&source_code=%23include%20%3Cstdio.h%3E%0A%23include%20%3Cstdlib.h%3E%0A%23include%20%3Cstring.h%3E%0A%0A%0Achar%20hooray%5B%5D%20%3D%20%22Hooray%22%3B%0Achar%20nope%5B%5D%20%20%20%3D%20%22Nope%22%3B%0A%0Aint%20main%28%29%20%7B%0A%20%20%20%20gets%28hooray%29%3B%20%0A%20%20%20%20hooray%5Bstrlen%28hooray%29%2F2%5D%20%2F%3D%202%3B%0A%20%20%20%20hooray%5Bsizeof%28hooray%29-1%5D%20-%3D%2032%3B%0A%20%20%20%20%0A%20%20%20%20if%28%21strcmp%28hooray%2Cnope%29%29%0A%20%20%20%20%20%20%20%20printf%28%22%25s%5Cn%22%2C%20nope%29%3B%0A%20%20%20%20else%0A%20%20%20%20%20%20%20%20printf%28%22Nope%5Cn%22%29%3B%0A%7D)
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 
+char hooray[] = "Hooray";
+char nope[]   = "Nope";
+
+int main() {
+    gets(hooray); 
+    hooray[strlen(hooray)/2] /= 2;
+    hooray[sizeof(hooray)-1] -= 32;
+    
+    if(!strcmp(hooray,nope))
+        printf("%s\n", nope);
+    else
+        printf("Nope\n");
+}
+```
