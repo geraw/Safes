@@ -301,3 +301,61 @@ int main() {
         printf("Hooray\n");
 }
 ```
+
+## Time
+[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)]([https://onlinegdb.com/eihx-5Hv9)
+
+```c
+#define _GNU_SOURCE
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+
+int main () {
+   setenv("TZ", "Asia/Jerusalem", 1);
+   tzset();
+   
+   int year;
+   int month;
+   int day;
+   int hour;
+   int minute;
+
+   printf("Year:\n");
+   scanf("%d",&year);
+   printf("Month:\n");
+   scanf("%d",&month);
+   printf("Day:\n");
+   scanf("%d",&day);
+   printf("Hour:\n");
+   scanf("%d",&hour);
+   printf("Minute:\n");
+   scanf("%d",&minute);
+   
+   struct tm input = {0};
+   input.tm_year = year-1900;
+   input.tm_mon = month-1;
+   input.tm_mday = day;
+   input.tm_hour = hour;
+   input.tm_min = minute;
+
+
+   time_t now1 = mktime(&input); //convert input time to seconds since 1.1.1970 (unix time)
+   printf("Now: %s", asctime(&input)); //This is the time of input
+
+   time_t later = now1+3600;
+   struct tm *input_time2 = localtime(&later);
+   printf("Later: %s", asctime(input_time2)); //This is the time an hour from input
+
+   if(input_time2->tm_hour > input.tm_hour //This is the important condition, the rest are to prevent cheating
+   || year < 1900 || year > 2038 || month < 1 || month > 12 || day < 1 || day > 31 || hour < 0 || hour > 59 || minute < 0 || minute > 59){
+    printf("Congrats! You operate in a linear time enviroment\n");
+   }else{
+    printf("Hurray! Time Travel Detected\n");
+   }
+
+   return(0);
+}
+```
