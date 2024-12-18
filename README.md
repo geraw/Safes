@@ -303,11 +303,9 @@ int main() {
 ```
 
 ## Time
-[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)]([https://onlinegdb.com/eihx-5Hv9)
+[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)]([https://onlinegdb.com/nXSb6K59d])
 
 ```c
-#define _GNU_SOURCE
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -323,16 +321,7 @@ int main () {
    int hour;
    int minute;
 
-   printf("Year:\n");
-   scanf("%d",&year);
-   printf("Month:\n");
-   scanf("%d",&month);
-   printf("Day:\n");
-   scanf("%d",&day);
-   printf("Hour:\n");
-   scanf("%d",&hour);
-   printf("Minute:\n");
-   scanf("%d",&minute);
+   scanf("%d %d %d %d %d",&year,&month,&day,&hour,&minute);
    
    struct tm input = {0};
    input.tm_year = year-1900;
