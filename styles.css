@@ -53,8 +53,7 @@ h1 {
 .scoreboard-link,
 .secondary-link,
 button,
-.compiler-link,
-.file-button {
+.compiler-link {
   border: 0;
   border-radius: 6px;
   cursor: pointer;
@@ -289,16 +288,11 @@ code {
   line-height: 1.5;
 }
 
-.compiler-link,
-.file-button {
+.compiler-link {
   background: #eef2f7;
   color: #26313f;
   padding: 9px 11px;
   text-align: center;
-}
-
-.file-button input {
-  display: none;
 }
 
 output {
@@ -382,8 +376,7 @@ textarea:disabled {
 
   .scoreboard-link,
   button,
-  .compiler-link,
-  .file-button {
+  .compiler-link {
     width: 100%;
     text-align: center;
   }

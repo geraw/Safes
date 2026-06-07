@@ -1,3 +1,4 @@
+const checkerBase = (new URLSearchParams(location.search).get("checker") || window.CYBER_RIDDLES_CHECKER || "").replace(/\/$/, "");
 const configuredApi = new URLSearchParams(location.search).get("api") || window.CYBER_RIDDLES_API || "";
 const apiBase = configuredApi.replace(/\/$/, "");
 const apiMode = new URLSearchParams(location.search).get("apiMode") || window.CYBER_RIDDLES_API_MODE || (apiBase.includes("/macros/s/") ? "apps-script" : "rest");
@@ -57,8 +58,15 @@ async function request(path) {
   return data;
 }
 
+async function checkerRequest(path) {
+  const response = await fetch(`${checkerBase}${path}`);
+  const data = await response.json();
+  if (!response.ok || data.error) throw new Error(data.error || "שגיאה לא צפויה.");
+  return data;
+}
+
 async function loadReadmeChallenges() {
-  const response = await fetch(`README.md?v=20260607-2`, { cache: "no-store" });
+  const response = await fetch(`README.md?v=20260607-3`, { cache: "no-store" });
   const readme = await response.text();
   return staticChallengeIndex.map((challenge, index) => {
     const start = readme.indexOf(`## ${challenge.title}`);
@@ -112,10 +120,17 @@ function showNotice(message) {
 
 async function init() {
   const staticChallenges = await loadReadmeChallenges().catch(() => staticChallengeIndex);
+  if (checkerBase) {
+    const state = await checkerRequest("/state");
+    render(state.challenges?.length ? state.challenges : staticChallenges, state.leaderboard || []);
+    els.status.textContent = "מתעדכן";
+    els.status.classList.add("active");
+    return;
+  }
   if (!apiBase) {
     render(staticChallenges, []);
     els.status.textContent = "לא מחובר";
-    showNotice("העמוד המפורט צריך API שמחזיר leaderboard. כרגע ההגשות נכתבות ל-Google Form דרך Worker, אבל אין קריאה חוזרת מהגיליון.");
+    showNotice("אין מקור נתונים מחובר להצגת לוח התוצאות.");
     return;
   }
   const state = await request("/state");
