@@ -1,5 +1,5 @@
 const tokenKey = "cyber-riddles-team-token";
-const configuredApi = new URLSearchParams(location.search).get("api") || window.CYBER_RIDDLES_API || "/api";
+const configuredApi = new URLSearchParams(location.search).get("api") || window.CYBER_RIDDLES_API || "";
 const apiBase = configuredApi.replace(/\/$/, "");
 const apiMode = new URLSearchParams(location.search).get("apiMode") || window.CYBER_RIDDLES_API_MODE || (apiBase.includes("/macros/s/") ? "apps-script" : "rest");
 let state = { challenges: [], leaderboard: [], solved: [], team: null };
@@ -37,6 +37,7 @@ function token() {
 }
 
 async function request(path, options = {}) {
+  if (!apiBase) throw new Error("לא הוגדר חיבור ל-Google Sheets.");
   const action = path.replace(/^\//, "").split("?")[0];
   const query = path.includes("?") ? `&${path.split("?")[1]}` : "";
   const url = apiMode === "apps-script" ? `${apiBase}?action=${encodeURIComponent(action)}${query}` : `${apiBase}${path}`;
@@ -124,7 +125,7 @@ function renderChallenges() {
       try {
         const result = await request("/submit", {
           method: "POST",
-          body: JSON.stringify({ token: token(), challengeId: challenge.id, solution: textarea.value })
+          body: JSON.stringify({ token: token(), challengeId: challenge.id, solution: textarea.value, source: challenge.source })
         });
         state.leaderboard = result.leaderboard;
         state.solved = result.solved;
@@ -159,9 +160,9 @@ async function loadReadmeChallenges() {
 function showApiNotice(error) {
   els.apiNotice.innerHTML = `
     <div class="api-error">
-      <h2>החידות נטענו, אבל אין חיבור לשרת הבדיקה</h2>
+      <h2>החידות נטענו, אבל אין חיבור ל-Google Sheets</h2>
       <p>${escapeHtml(error.message)}</p>
-      <p>ל-GitHub Pages הגדירו את <code>window.CYBER_RIDDLES_API</code> בקובץ <code>public/config.js</code>, או פתחו עם <code>?api=https://script.google.com/macros/s/.../exec</code>.</p>
+      <p>הבדיקה מתבצעת דרך Paiza מתוך Google Apps Script. הגדירו את <code>window.CYBER_RIDDLES_API</code> בקובץ <code>docs/config.js</code>, או פתחו עם <code>?api=https://script.google.com/macros/s/.../exec</code>.</p>
     </div>
   `;
 }

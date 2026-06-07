@@ -91,12 +91,13 @@ function submit(body) {
   const token = String(body.token || "");
   const challengeId = String(body.challengeId || "");
   const solution = String(body.solution || "");
+  const source = sourceForChallenge(challengeId, body.source);
   const team = teamByToken(token);
   if (!team) throw new Error("צריך להרשם כקבוצה לפני העלאת פתרון.");
   if (!challengeId) throw new Error("חידה לא קיימת.");
   if (!solution.trim()) throw new Error("הפתרון ריק.");
 
-  const result = checkSolution(challengeId, solution);
+  const result = checkSolution(source, solution);
   append(SHEETS.submissions, {
     submittedAt: new Date().toISOString(),
     teamToken: token,
@@ -116,19 +117,40 @@ function submit(body) {
   };
 }
 
-function checkSolution(challengeId, solution) {
-  const checkerUrl = PropertiesService.getScriptProperties().getProperty("CHECKER_URL");
-  if (!checkerUrl) throw new Error("לא הוגדר CHECKER_URL ב-Script Properties.");
+function sourceForChallenge(challengeId, fallbackSource) {
+  const challenge = rows(SHEETS.challenges).find((row) => row.id === challengeId);
+  const source = String((challenge && challenge.source) || fallbackSource || "");
+  if (!source.trim()) throw new Error("לא נמצא קוד מקור לחידה.");
+  return source;
+}
 
-  const response = UrlFetchApp.fetch(checkerUrl, {
+function checkSolution(source, solution) {
+  const created = JSON.parse(UrlFetchApp.fetch("https://api.paiza.io/runners/create", {
     method: "post",
-    contentType: "application/json",
+    payload: {
+      source_code: source,
+      input: solution,
+      language: "c",
+      api_key: "guest"
+    },
     muteHttpExceptions: true,
-    payload: JSON.stringify({ challengeId, solution })
-  });
-  const data = JSON.parse(response.getContentText());
-  if (response.getResponseCode() >= 400) throw new Error(data.error || "שרת הבדיקה החזיר שגיאה.");
-  return data;
+  }).getContentText());
+  if (!created.id) throw new Error("Paiza לא החזיר מזהה הרצה.");
+
+  const detailsUrl = "https://api.paiza.io/runners/get_details?id=" + encodeURIComponent(created.id) + "&api_key=guest";
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    Utilities.sleep(700);
+    const details = JSON.parse(UrlFetchApp.fetch(detailsUrl, { muteHttpExceptions: true }).getContentText());
+    if (details.status !== "completed") continue;
+    return {
+      ok: /\bHooray\b/.test(String(details.stdout || "")),
+      output: details.stdout || "",
+      error: details.stderr || details.build_stderr || "",
+      paizaId: created.id
+    };
+  }
+
+  throw new Error("Paiza לא סיים את ההרצה בזמן.");
 }
 
 function leaderboard() {

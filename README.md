@@ -9,11 +9,10 @@ Recommended setup:
 1. In GitHub, enable Pages from the `docs` folder.
 2. Create a Google Sheet for the contest.
 3. Open Extensions -> Apps Script and paste `google-apps-script/Code.gs`.
-4. In Apps Script, set Script Property `CHECKER_URL` to the existing solution-checker endpoint. It should accept `{ challengeId, solution }` and return `{ ok, output, error }`.
-5. Deploy the Apps Script as a Web App, executable as you and accessible to anyone with the link.
-6. Copy `docs/config.example.js` to `docs/config.js` and set `window.CYBER_RIDDLES_API` to the Web App URL.
+4. Deploy the Apps Script as a Web App, executable as you and accessible to anyone with the link.
+5. Copy `docs/config.example.js` to `docs/config.js` and set `window.CYBER_RIDDLES_API` to the Web App URL.
 
-The Google Sheet stores teams and submissions. The Apps Script computes the leaderboard score: for each solved challenge, every solving team receives `1 / number_of_solving_teams`.
+The Google Sheet stores teams and submissions. The Apps Script runs the submitted input against the C source through Paiza, then computes the leaderboard score: for each solved challenge, every solving team receives `1 / number_of_solving_teams`.
 
 The page reads the challenge source and Paiza compiler links from `docs/README.md`. If you edit the root README, copy it to `docs/README.md` before publishing.
 
