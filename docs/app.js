@@ -23,9 +23,13 @@ const staticChallengeIndex = [
 const els = {
   teamStatus: document.querySelector("#team-status"),
   registerForm: document.querySelector("#register-form"),
+  scoreboardLink: document.querySelector("#scoreboard-link"),
   teamName: document.querySelector("#team-name"),
   teamMembers: document.querySelector("#team-members"),
   leaderboard: document.querySelector("#leaderboard-body"),
+  detailedPanel: document.querySelector("#detailed-scoreboard"),
+  detailedHead: document.querySelector("#detailed-scoreboard-head"),
+  detailedBody: document.querySelector("#detailed-scoreboard-body"),
   challenges: document.querySelector("#challenges"),
   challengeCount: document.querySelector("#challenge-count"),
   apiNotice: document.querySelector("#api-notice"),
@@ -85,6 +89,47 @@ function renderLeaderboard() {
   });
 }
 
+function shortTeamName(name) {
+  const clean = String(name || "").trim();
+  if (clean.length <= 14) return clean;
+  const words = clean.split(/\s+/).filter(Boolean);
+  if (words.length > 1) return words.slice(0, 4).map((word) => word[0]).join("");
+  return `${clean.slice(0, 12)}...`;
+}
+
+function renderDetailedLeaderboard() {
+  els.detailedHead.innerHTML = "";
+  els.detailedBody.innerHTML = "";
+
+  const headerRow = document.createElement("tr");
+  headerRow.innerHTML = `
+    <th class="team-column">קבוצה</th>
+    ${state.challenges.map((challenge) => `<th class="challenge-column">${escapeHtml(challenge.title)}</th>`).join("")}
+    <th>סה"כ</th>
+  `;
+  els.detailedHead.append(headerRow);
+
+  if (!state.leaderboard.length) {
+    els.detailedBody.innerHTML = `<tr><td class="empty" colspan="${state.challenges.length + 2}">עדיין אין קבוצות רשומות.</td></tr>`;
+    return;
+  }
+
+  state.leaderboard.forEach((team) => {
+    const row = document.createElement("tr");
+    const cells = state.challenges.map((challenge) => {
+      const value = team.challenges?.[challenge.id];
+      const content = value ? formatScore(value) : "";
+      return `<td class="${value ? "score-cell" : "empty-score"}">${content}</td>`;
+    });
+    row.innerHTML = `
+      <th class="team-column" title="${escapeHtml(team.name)}">${escapeHtml(shortTeamName(team.name))}</th>
+      ${cells.join("")}
+      <td class="total-cell">${formatScore(team.score)}</td>
+    `;
+    els.detailedBody.append(row);
+  });
+}
+
 function renderChallenges() {
   els.challengeCount.textContent = `${state.challenges.length} חידות`;
   els.challenges.innerHTML = "";
@@ -132,6 +177,7 @@ function renderChallenges() {
         output.className = result.ok ? "ok" : "fail";
         output.textContent = result.ok ? "נפתר. הניקוד עודכן." : `לא עבר: ${result.output || result.error || "No Hooray"}`;
         renderLeaderboard();
+        renderDetailedLeaderboard();
         renderChallenges();
       } catch (error) {
         output.className = "fail";
@@ -193,6 +239,7 @@ async function refresh() {
   clearApiNotice();
   renderTeam();
   renderLeaderboard();
+  renderDetailedLeaderboard();
   renderChallenges();
 }
 
@@ -210,8 +257,16 @@ refresh().catch(async (error) => {
   state = { challenges: await loadReadmeChallenges().catch(() => []), leaderboard: [], solved: [], team: null };
   renderTeam();
   renderLeaderboard();
+  renderDetailedLeaderboard();
   renderChallenges();
   showApiNotice(error);
+});
+
+els.scoreboardLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  els.detailedPanel.hidden = false;
+  renderDetailedLeaderboard();
+  els.detailedPanel.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
 setInterval(() => {
