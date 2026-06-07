@@ -51,6 +51,7 @@ h1 {
 }
 
 .scoreboard-link,
+.secondary-link,
 button,
 .compiler-link,
 .file-button {
@@ -67,6 +68,11 @@ button {
   background: var(--accent);
   color: #ffffff;
   padding: 11px 16px;
+}
+
+.secondary-link {
+  color: var(--accent);
+  font-weight: 700;
 }
 
 .layout {
@@ -95,6 +101,14 @@ button {
 
 .scoreboard-panel {
   grid-row: span 2;
+}
+
+.detailed-scoreboard-panel {
+  grid-column: 1 / -1;
+}
+
+.detailed-scoreboard-panel[hidden] {
+  display: none;
 }
 
 .panel-title,
@@ -173,6 +187,43 @@ table {
   width: 100%;
   border-collapse: collapse;
   min-width: 420px;
+}
+
+.detailed-table {
+  min-width: 1320px;
+}
+
+.detailed-table th,
+.detailed-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.detailed-table .team-column {
+  min-width: 120px;
+  position: sticky;
+  right: 0;
+  z-index: 1;
+  background: var(--panel);
+  text-align: right;
+}
+
+.detailed-table .challenge-column {
+  min-width: 110px;
+}
+
+.score-cell {
+  background: var(--soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.empty-score {
+  color: var(--muted);
+}
+
+.total-cell {
+  font-weight: 700;
 }
 
 th,
