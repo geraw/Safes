@@ -1,5 +1,6 @@
 const tokenKey = "cyber-riddles-team-token";
 const teamKey = "cyber-riddles-team";
+const solvedKey = "cyber-riddles-solved";
 const checkerBase = (new URLSearchParams(location.search).get("checker") || window.CYBER_RIDDLES_CHECKER || "").replace(/\/$/, "");
 const configuredApi = new URLSearchParams(location.search).get("api") || window.CYBER_RIDDLES_API || "";
 const apiBase = configuredApi.replace(/\/$/, "");
@@ -60,7 +61,7 @@ function storedTeam() {
 }
 
 async function request(path, options = {}) {
-  if (!apiBase) throw new Error("לא הוגדר חיבור ל-Google Sheets.");
+  if (!apiBase) throw new Error("לא הוגדר חיבור למערכת.");
   const action = path.replace(/^\//, "").split("?")[0];
   const query = path.includes("?") ? `&${path.split("?")[1]}` : "";
   const url = apiMode === "apps-script" ? `${apiBase}?action=${encodeURIComponent(action)}${query}` : `${apiBase}${path}`;
@@ -106,6 +107,29 @@ function renderLeaderboard() {
     `;
     els.leaderboard.append(row);
   });
+}
+
+async function checkerState() {
+  if (!hasChecker) return null;
+  const response = await fetch(`${checkerBase}/state`);
+  const data = await response.json();
+  if (!response.ok || data.error) throw new Error(data.error || "שגיאה לא צפויה.");
+  return data;
+}
+
+function storedSolved() {
+  try {
+    return JSON.parse(localStorage.getItem(solvedKey) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function markSolved(challengeId) {
+  const solved = new Set(storedSolved());
+  solved.add(challengeId);
+  localStorage.setItem(solvedKey, JSON.stringify(Array.from(solved)));
+  state.solved = Array.from(new Set([...(state.solved || []), challengeId]));
 }
 
 async function submitToChecker(payload) {
@@ -175,7 +199,6 @@ function renderChallenges() {
     const link = node.querySelector(".compiler-link");
     const form = node.querySelector(".submit-form");
     const textarea = node.querySelector("textarea");
-    const file = node.querySelector("input[type=file]");
     const submitButton = node.querySelector("button[type=submit]");
     const output = node.querySelector("output");
 
@@ -193,15 +216,9 @@ function renderChallenges() {
 
     if (!hasApi && !hasChecker) {
       textarea.disabled = true;
-      file.disabled = true;
       submitButton.disabled = true;
       output.textContent = "הגשה תופעל אחרי חיבור לבדיקת Paiza.";
     }
-
-    file.addEventListener("change", async () => {
-      const selected = file.files[0];
-      if (selected) textarea.value = await selected.text();
-    });
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -221,7 +238,16 @@ function renderChallenges() {
             compilerUrl: challenge.compilerUrl || ""
           });
           output.className = result.ok ? "ok" : "fail";
-          output.textContent = result.ok ? "נפתר. ההגשה והתוצאה נשלחו ל-Google Sheet." : `לא עבר: ${result.output || result.error || "No Hooray"}`;
+          if (result.ok) {
+            markSolved(challenge.id);
+            output.textContent = "נפתר. ההגשה נרשמה.";
+            const liveState = await checkerState().catch(() => null);
+            if (liveState) state.leaderboard = liveState.leaderboard || [];
+            renderLeaderboard();
+            renderChallenges();
+          } else {
+            output.textContent = `לא עבר: ${result.output || result.error || "No Hooray"}`;
+          }
           return;
         }
         const result = await request("/submit", {
@@ -246,7 +272,7 @@ function renderChallenges() {
 }
 
 async function loadReadmeChallenges() {
-  const response = await fetch(`README.md?v=20260607-2`, { cache: "no-store" });
+  const response = await fetch(`README.md?v=20260607-3`, { cache: "no-store" });
   const readme = await response.text();
   return staticChallengeIndex.map((challenge, index) => {
     const start = readme.indexOf(`## ${challenge.title}`);
@@ -262,9 +288,9 @@ async function loadReadmeChallenges() {
 function showApiNotice(error) {
   els.apiNotice.innerHTML = `
     <div class="api-error">
-      <h2>החידות נטענו, אבל אין חיבור ל-Google Sheets</h2>
+      <h2>החידות נטענו, אבל אין חיבור למערכת</h2>
       <p>${escapeHtml(error.message)}</p>
-      <p>הבדיקה מתבצעת דרך Paiza מתוך Google Apps Script. הגדירו את <code>window.CYBER_RIDDLES_API</code> בקובץ <code>docs/config.js</code>, או פתחו עם <code>?api=https://script.google.com/macros/s/.../exec</code>.</p>
+      <p>בדקו שהגדרת החיבור ב-<code>docs/config.js</code> תקינה.</p>
     </div>
   `;
 }
@@ -273,7 +299,7 @@ function showSetupNotice() {
   els.apiNotice.innerHTML = `
     <div class="setup-notice">
       <h2>מצב צפייה בלבד</h2>
-      <p>החידות וקישורי Paiza זמינים. בדיקה אוטומטית ושמירה ל-Google Sheet יפעלו אחרי חיבור Cloudflare Worker.</p>
+      <p>החידות וקישורי Paiza זמינים. בדיקה אוטומטית ורישום הגשות יפעלו אחרי חיבור המערכת.</p>
       <p>פתחו את האתר עם <code>?checker=https://...workers.dev</code> או הגדירו <code>window.CYBER_RIDDLES_CHECKER</code> בקובץ <code>docs/config.js</code>.</p>
     </div>
   `;
@@ -296,7 +322,13 @@ async function refresh() {
   const query = token() ? `?token=${encodeURIComponent(token())}` : "";
   const staticChallenges = await loadReadmeChallenges().catch(() => []);
   if (hasChecker && !hasApi) {
-    state = { challenges: staticChallenges, leaderboard: [], team: storedTeam(), solved: [] };
+    const liveState = await checkerState().catch(() => null);
+    state = {
+      challenges: staticChallenges,
+      leaderboard: liveState?.leaderboard || [],
+      team: storedTeam(),
+      solved: storedSolved()
+    };
     setBackendControlsEnabled(true);
     clearApiNotice();
     renderTeam();

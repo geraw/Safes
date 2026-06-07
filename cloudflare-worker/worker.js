@@ -4,6 +4,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (request.method === "OPTIONS") return corsResponse("", 204);
+    if (url.pathname === "/state" && request.method === "GET") return state(env);
     if (url.pathname === "/submit" && request.method === "POST") return submit(request, env);
     return corsJson({ error: "Not found." }, 404);
   }
@@ -17,6 +18,7 @@ async function submit(request, env) {
   }
 
   const result = await checkWithPaiza(body.source, body.solution);
+  await recordSubmission(env, body, result);
   await submitToGoogleForm(env, {
     submittedAt: new Date().toISOString(),
     teamName: body.teamName,
@@ -32,6 +34,74 @@ async function submit(request, env) {
   });
 
   return corsJson(result);
+}
+
+async function state(env) {
+  const submissions = await readSubmissions(env);
+  return corsJson({
+    leaderboard: leaderboard(submissions),
+    submissions: submissions.length
+  });
+}
+
+async function recordSubmission(env, body, result) {
+  if (!env.CONTEST_KV) return;
+  const submissions = await readSubmissions(env);
+  submissions.push({
+    submittedAt: new Date().toISOString(),
+    teamName: body.teamName,
+    members: body.members || "",
+    challengeId: body.challengeId,
+    challengeTitle: body.challengeTitle,
+    ok: Boolean(result.ok),
+    output: String(result.output || "").slice(0, 500),
+    error: String(result.error || "").slice(0, 500),
+    paizaId: result.paizaId || ""
+  });
+  await env.CONTEST_KV.put("submissions", JSON.stringify(submissions.slice(-5000)));
+}
+
+async function readSubmissions(env) {
+  if (!env.CONTEST_KV) return [];
+  const raw = await env.CONTEST_KV.get("submissions");
+  return raw ? JSON.parse(raw) : [];
+}
+
+function leaderboard(submissions) {
+  const teamMap = new Map();
+  const solvedByChallenge = new Map();
+
+  for (const submission of submissions) {
+    if (!submission.teamName) continue;
+    if (!teamMap.has(submission.teamName)) {
+      teamMap.set(submission.teamName, {
+        name: submission.teamName,
+        members: submission.members || "",
+        solved: 0,
+        score: 0,
+        challenges: {}
+      });
+    }
+    if (!submission.ok) continue;
+    if (!solvedByChallenge.has(submission.challengeId)) solvedByChallenge.set(submission.challengeId, new Set());
+    solvedByChallenge.get(submission.challengeId).add(submission.teamName);
+  }
+
+  for (const [challengeId, teams] of solvedByChallenge.entries()) {
+    const points = teams.size ? 1 / teams.size : 0;
+    for (const teamName of teams) {
+      const team = teamMap.get(teamName);
+      team.solved += 1;
+      team.score += points;
+      team.challenges[challengeId] = Number(points.toFixed(4));
+    }
+  }
+
+  return Array.from(teamMap.values()).sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    if (b.solved !== a.solved) return b.solved - a.solved;
+    return a.name.localeCompare(b.name);
+  });
 }
 
 async function checkWithPaiza(source, input) {
