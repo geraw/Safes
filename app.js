@@ -2,6 +2,7 @@ const tokenKey = "cyber-riddles-team-token";
 const configuredApi = new URLSearchParams(location.search).get("api") || window.CYBER_RIDDLES_API || "";
 const apiBase = configuredApi.replace(/\/$/, "");
 const apiMode = new URLSearchParams(location.search).get("apiMode") || window.CYBER_RIDDLES_API_MODE || (apiBase.includes("/macros/s/") ? "apps-script" : "rest");
+const hasApi = Boolean(apiBase);
 let state = { challenges: [], leaderboard: [], solved: [], team: null };
 
 const staticChallengeIndex = [
@@ -35,6 +36,12 @@ const els = {
   apiNotice: document.querySelector("#api-notice"),
   template: document.querySelector("#challenge-template")
 };
+
+function setBackendControlsEnabled(enabled) {
+  els.registerForm.querySelectorAll("input, button").forEach((control) => {
+    control.disabled = !enabled;
+  });
+}
 
 function token() {
   return localStorage.getItem(tokenKey) || "";
@@ -144,6 +151,7 @@ function renderChallenges() {
     const form = node.querySelector(".submit-form");
     const textarea = node.querySelector("textarea");
     const file = node.querySelector("input[type=file]");
+    const submitButton = node.querySelector("button[type=submit]");
     const output = node.querySelector("output");
 
     article.dataset.challengeId = challenge.id;
@@ -156,6 +164,13 @@ function renderChallenges() {
     } else {
       link.removeAttribute("href");
       link.textContent = "אין קישור קומפיילר";
+    }
+
+    if (!hasApi) {
+      textarea.disabled = true;
+      file.disabled = true;
+      submitButton.disabled = true;
+      output.textContent = "הגשה תופעל אחרי חיבור ל-Google Sheets.";
     }
 
     file.addEventListener("change", async () => {
@@ -213,6 +228,16 @@ function showApiNotice(error) {
   `;
 }
 
+function showSetupNotice() {
+  els.apiNotice.innerHTML = `
+    <div class="setup-notice">
+      <h2>מצב צפייה בלבד</h2>
+      <p>החידות וקישורי Paiza זמינים. הרשמה, הגשת פתרונות ולוח תוצאות חי יפעלו אחרי חיבור Google Sheets דרך Google Apps Script.</p>
+      <p>פתחו את האתר עם <code>?api=https://script.google.com/macros/s/.../exec</code> או הגדירו <code>window.CYBER_RIDDLES_API</code> בקובץ <code>docs/config.js</code>.</p>
+    </div>
+  `;
+}
+
 function clearApiNotice() {
   els.apiNotice.innerHTML = "";
 }
@@ -229,6 +254,16 @@ function escapeHtml(value) {
 async function refresh() {
   const query = token() ? `?token=${encodeURIComponent(token())}` : "";
   const staticChallenges = await loadReadmeChallenges().catch(() => []);
+  if (!hasApi) {
+    state = { challenges: staticChallenges, leaderboard: [], team: null, solved: [] };
+    setBackendControlsEnabled(false);
+    renderTeam();
+    renderLeaderboard();
+    renderDetailedLeaderboard();
+    renderChallenges();
+    showSetupNotice();
+    return;
+  }
   const serverState = await request(`/state${query}`);
   state = {
     challenges: serverState.challenges?.length ? serverState.challenges : staticChallenges,
@@ -237,6 +272,7 @@ async function refresh() {
     solved: serverState.solved || []
   };
   clearApiNotice();
+  setBackendControlsEnabled(true);
   renderTeam();
   renderLeaderboard();
   renderDetailedLeaderboard();
@@ -245,6 +281,10 @@ async function refresh() {
 
 els.registerForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (!hasApi) {
+    showSetupNotice();
+    return;
+  }
   const result = await request("/register", {
     method: "POST",
     body: JSON.stringify({ name: els.teamName.value, members: els.teamMembers.value })
@@ -269,6 +309,8 @@ els.scoreboardLink.addEventListener("click", (event) => {
   els.detailedPanel.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
-setInterval(() => {
-  refresh().catch(() => {});
-}, 5000);
+if (hasApi) {
+  setInterval(() => {
+    refresh().catch(() => {});
+  }, 5000);
+}

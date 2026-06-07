@@ -316,7 +316,8 @@ output.fail {
   text-align: center;
 }
 
-.api-error {
+.api-error,
+.setup-notice {
   background: var(--warn-soft);
   border: 1px solid #ffd0ca;
   border-radius: 8px;
@@ -325,14 +326,29 @@ output.fail {
   padding: 18px;
 }
 
-.api-error p {
+.setup-notice {
+  background: #f1f7ff;
+  border-color: #c8defc;
+  color: #21456f;
+}
+
+.api-error p,
+.setup-notice p {
   margin-top: 8px;
   line-height: 1.55;
 }
 
-.api-error code {
+.api-error code,
+.setup-notice code {
   color: var(--ink);
   font-size: 14px;
+}
+
+button:disabled,
+input:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
 }
 
 @media (max-width: 960px) {
