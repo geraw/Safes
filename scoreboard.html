@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cyber Riddles - Scoreboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>לוח תוצאות</h1>
+        <p>ניקוד לפי חידה וקבוצה.</p>
+      </div>
+      <a class="scoreboard-link" href="index.html">חזרה לחידות</a>
+    </header>
+
+    <main class="scoreboard-page">
+      <section class="panel detailed-scoreboard-panel">
+        <div class="panel-title">
+          <h2>לוח תוצאות מפורט</h2>
+          <span id="scoreboard-status" class="tag">טוען</span>
+        </div>
+        <p class="scoring-rule">בכל תא מופיע הניקוד שהקבוצה מקבלת על החידה. תא ריק אומר שהקבוצה עדיין לא פתרה את החידה.</p>
+        <div id="scoreboard-notice"></div>
+        <div class="table-wrap detailed-table-wrap">
+          <table class="detailed-table">
+            <thead id="detailed-scoreboard-head"></thead>
+            <tbody id="detailed-scoreboard-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="config.js" onerror="window.CYBER_RIDDLES_CONFIG_MISSING=true"></script>
+    <script src="scoreboard.js"></script>
+  </body>
+</html>

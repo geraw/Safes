@@ -129,6 +129,7 @@ function shortTeamName(name) {
 }
 
 function renderDetailedLeaderboard() {
+  if (!els.detailedHead || !els.detailedBody) return;
   els.detailedHead.innerHTML = "";
   els.detailedBody.innerHTML = "";
 
@@ -369,12 +370,14 @@ refresh().catch(async (error) => {
   showApiNotice(error);
 });
 
-els.scoreboardLink.addEventListener("click", (event) => {
-  event.preventDefault();
-  els.detailedPanel.hidden = false;
-  renderDetailedLeaderboard();
-  els.detailedPanel.scrollIntoView({ behavior: "smooth", block: "start" });
-});
+if (els.scoreboardLink && els.detailedPanel) {
+  els.scoreboardLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    els.detailedPanel.hidden = false;
+    renderDetailedLeaderboard();
+    els.detailedPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
 
 if (hasApi) {
   setInterval(() => {

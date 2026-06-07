@@ -103,6 +103,10 @@ button {
   grid-row: span 2;
 }
 
+.scoreboard-page {
+  padding: 22px clamp(14px, 3vw, 36px) 42px;
+}
+
 .detailed-scoreboard-panel {
   grid-column: 1 / -1;
 }
