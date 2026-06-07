@@ -11,8 +11,12 @@ Recommended setup:
 1. In GitHub, enable Pages from the `docs` folder.
 2. Create a Google Sheet for the contest.
 3. Open Extensions -> Apps Script and paste `google-apps-script/Code.gs`.
-4. Deploy the Apps Script as a Web App, executable as you and accessible to anyone with the link.
-5. Copy `docs/config.example.js` to `docs/config.js` and set `window.CYBER_RIDDLES_API` to the Web App URL.
+4. In Apps Script, open Project Settings and enable "Show appsscript.json manifest file in editor".
+5. Open `appsscript.json` and paste `google-apps-script/appsscript.json`.
+6. Deploy the Apps Script as a Web App, executable as you and accessible to anyone with the link.
+7. Copy `docs/config.example.js` to `docs/config.js` and set `window.CYBER_RIDDLES_API` to the Web App URL.
+
+If Google shows "This app is blocked", the account's Google Workspace policy is blocking unverified Apps Script authorization. Use a personal Gmail account for the Sheet/Apps Script, or ask the Workspace administrator to allow the app.
 
 The Google Sheet stores teams and submissions. The Apps Script runs the submitted input against the C source through Paiza, then computes the leaderboard score: for each solved challenge, every solving team receives `1 / number_of_solving_teams`.
 
