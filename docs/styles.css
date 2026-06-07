@@ -1,0 +1,319 @@
+:root {
+  color-scheme: light;
+  --bg: #f7f8fb;
+  --panel: #ffffff;
+  --ink: #1d2433;
+  --muted: #667085;
+  --line: #d7dce5;
+  --accent: #0f766e;
+  --accent-2: #b42318;
+  --soft: #e7f6f4;
+  --warn-soft: #fff0ee;
+  --shadow: 0 12px 32px rgba(23, 31, 48, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Arial, "Segoe UI", sans-serif;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px clamp(18px, 4vw, 48px);
+  background: #26313f;
+  color: #ffffff;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 34px;
+  line-height: 1.15;
+}
+
+.topbar p {
+  margin-top: 8px;
+  color: #d6dde8;
+}
+
+.scoreboard-link,
+button,
+.compiler-link,
+.file-button {
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.scoreboard-link,
+button {
+  background: var(--accent);
+  color: #ffffff;
+  padding: 11px 16px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 380px) 1fr;
+  gap: 18px;
+  padding: 22px clamp(14px, 3vw, 36px) 42px;
+}
+
+.panel,
+.challenge {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.panel {
+  padding: 18px;
+}
+
+.register-panel,
+.scoreboard-panel {
+  align-self: start;
+}
+
+.scoreboard-panel {
+  grid-row: span 2;
+}
+
+.panel-title,
+.section-head,
+.challenge-head,
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tag,
+.solved-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  border-radius: 999px;
+  background: #edf1f7;
+  color: var(--muted);
+  padding: 4px 10px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.tag.active,
+.solved-pill.done {
+  background: var(--soft);
+  color: var(--accent);
+}
+
+.form-grid,
+.submit-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  font: inherit;
+  padding: 10px 11px;
+}
+
+textarea {
+  resize: vertical;
+  direction: ltr;
+  text-align: left;
+  min-height: 116px;
+}
+
+.scoring-rule {
+  margin-top: 10px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.table-wrap {
+  margin-top: 14px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 420px;
+}
+
+th,
+td {
+  border-bottom: 1px solid var(--line);
+  padding: 11px 8px;
+  text-align: right;
+}
+
+th {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.challenges-panel {
+  grid-column: 2;
+}
+
+.section-head {
+  margin-bottom: 12px;
+}
+
+.section-head span {
+  color: var(--muted);
+}
+
+.challenge-list {
+  display: grid;
+  gap: 14px;
+}
+
+.challenge {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+  gap: 16px;
+  padding: 16px;
+}
+
+.challenge h3 {
+  font-size: 22px;
+}
+
+pre {
+  margin: 12px 0 0;
+  max-height: 280px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #111827;
+  color: #e5edf6;
+  direction: ltr;
+  text-align: left;
+  padding: 12px;
+}
+
+code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.compiler-link,
+.file-button {
+  background: #eef2f7;
+  color: #26313f;
+  padding: 9px 11px;
+  text-align: center;
+}
+
+.file-button input {
+  display: none;
+}
+
+output {
+  min-height: 24px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+output.ok {
+  color: var(--accent);
+}
+
+output.fail {
+  color: var(--accent-2);
+}
+
+.empty {
+  color: var(--muted);
+  text-align: center;
+}
+
+.api-error {
+  background: var(--warn-soft);
+  border: 1px solid #ffd0ca;
+  border-radius: 8px;
+  color: var(--accent-2);
+  margin-bottom: 14px;
+  padding: 18px;
+}
+
+.api-error p {
+  margin-top: 8px;
+  line-height: 1.55;
+}
+
+.api-error code {
+  color: var(--ink);
+  font-size: 14px;
+}
+
+@media (max-width: 960px) {
+  .layout,
+  .challenge {
+    grid-template-columns: 1fr;
+  }
+
+  .challenges-panel {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 620px) {
+  .topbar,
+  .panel-title,
+  .section-head,
+  .challenge-head,
+  .actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  .scoreboard-link,
+  button,
+  .compiler-link,
+  .file-button {
+    width: 100%;
+    text-align: center;
+  }
+}

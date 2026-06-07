@@ -119,7 +119,7 @@ int main() {
 
 ## Absurd
 
-[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)](https://paiza.io/projects/new?language=c&source_code=%23include%20%3Cstdio.h%3E%0A%0Aint%20main%28%29%20%7B%0A%09int%20n%3B%0A%09%0A%09scanf%28%22%25d%22%2C%20%26n%29%3B%0A%09sprintf%28%26n%2C%22%25d%22%2Cabs%28n%2B1234%29%29%3B%0A%0A%09if%20%28%28%28char%20%2A%29%26n%29%5B0%5D%20%21%3D%20%27-%27%29%0A%09%09printf%28%22Nope%5Cn%22%29%3B%0A%09else%0A%09%09printf%28%22Hooray%5Cn%22%29%3B%0A%7D)
+[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)](https://paiza.io/projects/new?language=c&source_code=%23include%20%3Cstdio.h%3E%0A%0Aint%20main%28%29%20%7B%0A%09int%20n%3B%0A%09%0A%09scanf%28%22%25d%22%2C%20%26n%29%3B%0A%09sprintf%28%26n%2C%22%25d%22%2Cabs%28n%2B1234%29%29%3B%0A%0A%09if%20%28n%20%3E0%20%26%26%20%28%28char%20%2A%29%26n%29%5B0%5D%20%21%3D%20%27-%27%29%0A%09%09printf%28%22Nope%5Cn%22%29%3B%0A%09else%0A%09%09printf%28%22Hooray%5Cn%22%29%3B%0A%7D)
 
 ```c
 #include <stdio.h>
@@ -130,7 +130,7 @@ int main() {
 	scanf("%d", &n);
 	sprintf(&n,"%d",abs(n+1234));
 
-	if (((char *)&n)[0] != '-')
+	if (n >0 && ((char *)&n)[0] != '-')
 		printf("Nope\n");
 	else
 		printf("Hooray\n");
@@ -316,52 +316,5 @@ int main() {
         printf("Nope\n");
     else
         printf("Hooray\n");
-}
-```
-
-## Time
-[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)]([https://onlinegdb.com/nXSb6K59d])
-
-```c
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <string.h>
-
-int main () {
-   setenv("TZ", "Asia/Jerusalem", 1);
-   tzset();
-   
-   int year;
-   int month;
-   int day;
-   int hour;
-   int minute;
-
-   scanf("%d %d %d %d %d",&year,&month,&day,&hour,&minute);
-   
-   struct tm input = {0};
-   input.tm_year = year-1900;
-   input.tm_mon = month-1;
-   input.tm_mday = day;
-   input.tm_hour = hour;
-   input.tm_min = minute;
-
-
-   time_t now1 = mktime(&input); //convert input time to seconds since 1.1.1970 (unix time)
-   printf("Now: %s", asctime(&input)); //This is the time of input
-
-   time_t later = now1+3600;
-   struct tm *input_time2 = localtime(&later);
-   printf("Later: %s", asctime(input_time2)); //This is the time an hour from input
-
-   if(input_time2->tm_hour > input.tm_hour //This is the important condition, the rest are to prevent cheating
-   || year < 1900 || year > 2038 || month < 1 || month > 12 || day < 1 || day > 31 || hour < 0 || hour > 59 || minute < 0 || minute > 59){
-    printf("Congrats! You operate in a linear time enviroment\n");
-   }else{
-    printf("Hurray! Time Travel Detected\n");
-   }
-
-   return(0);
 }
 ```

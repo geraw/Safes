@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cyber Riddles</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Cyber Riddles</h1>
+        <p>הרשמה בקבוצות, בדיקת פתרונות אוטומטית ולוח תוצאות חי לכיתה.</p>
+      </div>
+      <a class="scoreboard-link" href="#scoreboard">לוח תוצאות</a>
+    </header>
+
+    <main class="layout">
+      <section class="panel register-panel">
+        <div class="panel-title">
+          <h2>קבוצה</h2>
+          <span id="team-status" class="tag">לא רשומים</span>
+        </div>
+        <form id="register-form" class="form-grid">
+          <label>
+            שם קבוצה
+            <input id="team-name" name="name" autocomplete="off" required />
+          </label>
+          <label>
+            חברי הקבוצה
+            <input id="team-members" name="members" autocomplete="off" placeholder="שמות או מיילים" />
+          </label>
+          <button type="submit">הרשמה</button>
+        </form>
+      </section>
+
+      <section id="scoreboard" class="panel scoreboard-panel">
+        <div class="panel-title">
+          <h2>לוח תוצאות</h2>
+          <span class="tag">מתעדכן אוטומטית</span>
+        </div>
+        <p class="scoring-rule">ניקוד לכל חידה מתחלק בין כל הקבוצות שפתרו אותה: לבד = 1, שלוש קבוצות = 1/3 לכל קבוצה, ארבע קבוצות = 1/4.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>מקום</th>
+                <th>קבוצה</th>
+                <th>פתרו</th>
+                <th>ניקוד</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="challenges-panel">
+        <div class="section-head">
+          <h2>חידות</h2>
+          <span id="challenge-count"></span>
+        </div>
+        <div id="api-notice"></div>
+        <div id="challenges" class="challenge-list"></div>
+      </section>
+    </main>
+
+    <template id="challenge-template">
+      <article class="challenge">
+        <div class="challenge-main">
+          <div class="challenge-head">
+            <h3></h3>
+            <span class="solved-pill">לא נפתר</span>
+          </div>
+          <pre><code></code></pre>
+        </div>
+        <form class="submit-form">
+          <div class="actions">
+            <a class="compiler-link" target="_blank" rel="noreferrer">פתיחה בקומפיילר</a>
+            <label class="file-button">
+              העלאת קובץ
+              <input type="file" accept=".txt,.in" />
+            </label>
+          </div>
+          <label>
+            פתרון
+            <textarea rows="5" placeholder="הכניסו כאן את הקלט שיגרום לתוכנית להדפיס Hooray"></textarea>
+          </label>
+          <button type="submit">בדיקה והעלאה</button>
+          <output></output>
+        </form>
+      </article>
+    </template>
+
+    <script src="config.js" onerror="window.CYBER_RIDDLES_CONFIG_MISSING=true"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
