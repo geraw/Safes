@@ -246,7 +246,7 @@ function renderChallenges() {
 }
 
 async function loadReadmeChallenges() {
-  const response = await fetch("README.md");
+  const response = await fetch(`README.md?v=20260607-2`, { cache: "no-store" });
   const readme = await response.text();
   return staticChallengeIndex.map((challenge, index) => {
     const start = readme.indexOf(`## ${challenge.title}`);
