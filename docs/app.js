@@ -9,6 +9,7 @@ const hasChecker = Boolean(checkerBase);
 let state = { challenges: [], leaderboard: [], solved: [], team: null };
 
 const staticChallengeIndex = [
+  { id: "sanity-42", title: "Sanity 42" },
   { id: "bit-twister", title: "Bit Twister" },
   { id: "collatz", title: "Collatz" },
   { id: "floating-point", title: "Floating Point" },
