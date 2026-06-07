@@ -337,7 +337,7 @@ int main() {
 
 ## Associativity
 
-[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)](https://paiza.io/projects/new?language=c&source_code=%23include%20%3Cstdio.h%3E%0A%0Aint%20main%28%29%20%7B%0A%20%20%20%20%2F%2A%20floating-point%20addition%20is%20associative%20for%20the%20finite%20values%20accepted%20here.%20%2A%2F%0A%20%20%20%20float%20left_parenthesis%2C%20middle_parenthesis%2C%20right_parenthesis%3B%0A%20%20%20%20if%20%28scanf%28%22%25f%20%25f%20%25f%22%2C%20%26left_parenthesis%2C%26middle_parenthesis%2C%26right_parenthesis%29%20%21%3D%203%29%20%7B%0A%20%20%20%20%20%20%20%20printf%28%22Nope%5Cn%22%29%3B%0A%20%20%20%20%20%20%20%20return%200%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20if%20%28%28left_parenthesis%2Bmiddle_parenthesis%29%2Bright_parenthesis%20%3D%3D%20left_parenthesis%2B%28middle_parenthesis%2Bright_parenthesis%29%29%0A%20%20%20%20%20%20%20%20printf%28%22Nope%5Cn%22%29%3B%0A%20%20%20%20else%0A%20%20%20%20%20%20%20%20printf%28%22Hooray%5Cn%22%29%3B%0A%7D)
+[![Open in Online Compiler](https://img.shields.io/badge/Open%20in-Online%20Compiler-blue)](https://paiza.io/projects/new?language=c&source_code=%23include%20%3Cstdio.h%3E%0A%0Aint%20main%28%29%20%7B%0A%20%20%20%20%2F%2A%20floating-point%20addition%20is%20associative%20for%20the%20finite%20values%20accepted%20here.%20%2A%2F%0A%20%20%20%20float%20left_parenthesis%2C%20middle_parenthesis%2C%20right_parenthesis%3B%0A%20%20%20%20if%20%28scanf%28%22%25f%20%25f%20%25f%22%2C%20%26left_parenthesis%2C%26middle_parenthesis%2C%26right_parenthesis%29%20%21%3D%203%29%20%7B%0A%20%20%20%20%20%20%20%20printf%28%22Nope%5Cn%22%29%3B%0A%20%20%20%20%20%20%20%20return%200%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20if%20%28%28left_parenthesis%2Bmiddle_parenthesis%29%2Bright_parenthesis%20%3D%3D%20left_parenthesis%2B%28middle_parenthesis%2Bright_parenthesis%29%20%7C%7C%20left_parenthesis%2B%28middle_parenthesis%2Bright_parenthesis%29%20%21%3D%20left_parenthesis%2B%28middle_parenthesis%2Bright_parenthesis%29%29%0A%20%20%20%20%20%20%20%20printf%28%22Nope%5Cn%22%29%3B%0A%20%20%20%20else%0A%20%20%20%20%20%20%20%20printf%28%22Hooray%5Cn%22%29%3B%0A%7D)
 
 ```c
 #include <stdio.h>
@@ -350,7 +350,7 @@ int main() {
         return 0;
     }
 
-    if ((left_parenthesis+middle_parenthesis)+right_parenthesis == left_parenthesis+(middle_parenthesis+right_parenthesis))
+    if ((left_parenthesis+middle_parenthesis)+right_parenthesis == left_parenthesis+(middle_parenthesis+right_parenthesis) || left_parenthesis+(middle_parenthesis+right_parenthesis) != left_parenthesis+(middle_parenthesis+right_parenthesis))
         printf("Nope\n");
     else
         printf("Hooray\n");
