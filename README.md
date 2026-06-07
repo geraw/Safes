@@ -4,6 +4,8 @@
 
 The static classroom page is in `docs/index.html`. It is intended for GitHub Pages and provides group registration, solution uploads, and a live leaderboard UI.
 
+Live site: https://geraw.github.io/Safes/
+
 Recommended setup:
 
 1. In GitHub, enable Pages from the `docs` folder.
