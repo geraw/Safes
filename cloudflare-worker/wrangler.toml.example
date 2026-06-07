@@ -1,0 +1,17 @@
+name = "cyber-riddles-checker"
+main = "worker.js"
+compatibility_date = "2026-06-07"
+
+[vars]
+GOOGLE_FORM_ACTION = "https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse"
+FIELD_SUBMITTED_AT = "entry.111111111"
+FIELD_TEAM_NAME = "entry.222222222"
+FIELD_MEMBERS = "entry.333333333"
+FIELD_CHALLENGE_ID = "entry.444444444"
+FIELD_CHALLENGE_TITLE = "entry.555555555"
+FIELD_SOLUTION = "entry.666666666"
+FIELD_CHECK_STATUS = "entry.777777777"
+FIELD_COMPILER_URL = "entry.888888888"
+FIELD_PAIZA_ID = "entry.999999999"
+FIELD_OUTPUT = "entry.101010101"
+FIELD_ERROR = "entry.121212121"

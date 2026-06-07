@@ -1,8 +1,11 @@
 const tokenKey = "cyber-riddles-team-token";
+const teamKey = "cyber-riddles-team";
+const checkerBase = (new URLSearchParams(location.search).get("checker") || window.CYBER_RIDDLES_CHECKER || "").replace(/\/$/, "");
 const configuredApi = new URLSearchParams(location.search).get("api") || window.CYBER_RIDDLES_API || "";
 const apiBase = configuredApi.replace(/\/$/, "");
 const apiMode = new URLSearchParams(location.search).get("apiMode") || window.CYBER_RIDDLES_API_MODE || (apiBase.includes("/macros/s/") ? "apps-script" : "rest");
 const hasApi = Boolean(apiBase);
+const hasChecker = Boolean(checkerBase);
 let state = { challenges: [], leaderboard: [], solved: [], team: null };
 
 const staticChallengeIndex = [
@@ -45,6 +48,14 @@ function setBackendControlsEnabled(enabled) {
 
 function token() {
   return localStorage.getItem(tokenKey) || "";
+}
+
+function storedTeam() {
+  try {
+    return JSON.parse(localStorage.getItem(teamKey) || "null");
+  } catch {
+    return null;
+  }
 }
 
 async function request(path, options = {}) {
@@ -94,6 +105,18 @@ function renderLeaderboard() {
     `;
     els.leaderboard.append(row);
   });
+}
+
+async function submitToChecker(payload) {
+  if (!hasChecker) throw new Error("לא הוגדר חיבור לבדיקת Paiza.");
+  const response = await fetch(`${checkerBase}/submit`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  const data = await response.json();
+  if (!response.ok || data.error) throw new Error(data.error || "שגיאה לא צפויה.");
+  return data;
 }
 
 function shortTeamName(name) {
@@ -166,11 +189,11 @@ function renderChallenges() {
       link.textContent = "אין קישור קומפיילר";
     }
 
-    if (!hasApi) {
+    if (!hasApi && !hasChecker) {
       textarea.disabled = true;
       file.disabled = true;
       submitButton.disabled = true;
-      output.textContent = "הגשה תופעל אחרי חיבור ל-Google Sheets.";
+      output.textContent = "הגשה תופעל אחרי חיבור לבדיקת Paiza.";
     }
 
     file.addEventListener("change", async () => {
@@ -183,6 +206,22 @@ function renderChallenges() {
       output.className = "";
       output.textContent = "בודק...";
       try {
+        if (hasChecker) {
+          const team = storedTeam();
+          if (!team) throw new Error("צריך להרשם כקבוצה לפני העלאת פתרון.");
+          const result = await submitToChecker({
+            teamName: team.name,
+            members: team.members || "",
+            challengeId: challenge.id,
+            challengeTitle: challenge.title,
+            solution: textarea.value,
+            source: challenge.source,
+            compilerUrl: challenge.compilerUrl || ""
+          });
+          output.className = result.ok ? "ok" : "fail";
+          output.textContent = result.ok ? "נפתר. ההגשה והתוצאה נשלחו ל-Google Sheet." : `לא עבר: ${result.output || result.error || "No Hooray"}`;
+          return;
+        }
         const result = await request("/submit", {
           method: "POST",
           body: JSON.stringify({ token: token(), challengeId: challenge.id, solution: textarea.value, source: challenge.source })
@@ -232,8 +271,8 @@ function showSetupNotice() {
   els.apiNotice.innerHTML = `
     <div class="setup-notice">
       <h2>מצב צפייה בלבד</h2>
-      <p>החידות וקישורי Paiza זמינים. הרשמה, הגשת פתרונות ולוח תוצאות חי יפעלו אחרי חיבור Google Sheets דרך Google Apps Script.</p>
-      <p>פתחו את האתר עם <code>?api=https://script.google.com/macros/s/.../exec</code> או הגדירו <code>window.CYBER_RIDDLES_API</code> בקובץ <code>docs/config.js</code>.</p>
+      <p>החידות וקישורי Paiza זמינים. בדיקה אוטומטית ושמירה ל-Google Sheet יפעלו אחרי חיבור Cloudflare Worker.</p>
+      <p>פתחו את האתר עם <code>?checker=https://...workers.dev</code> או הגדירו <code>window.CYBER_RIDDLES_CHECKER</code> בקובץ <code>docs/config.js</code>.</p>
     </div>
   `;
 }
@@ -254,6 +293,16 @@ function escapeHtml(value) {
 async function refresh() {
   const query = token() ? `?token=${encodeURIComponent(token())}` : "";
   const staticChallenges = await loadReadmeChallenges().catch(() => []);
+  if (hasChecker && !hasApi) {
+    state = { challenges: staticChallenges, leaderboard: [], team: storedTeam(), solved: [] };
+    setBackendControlsEnabled(true);
+    clearApiNotice();
+    renderTeam();
+    renderLeaderboard();
+    renderDetailedLeaderboard();
+    renderChallenges();
+    return;
+  }
   if (!hasApi) {
     state = { challenges: staticChallenges, leaderboard: [], team: null, solved: [] };
     setBackendControlsEnabled(false);
@@ -282,6 +331,23 @@ async function refresh() {
 els.registerForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!hasApi) {
+    if (hasChecker) {
+      const team = {
+        token: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+        name: els.teamName.value.trim(),
+        members: els.teamMembers.value.trim()
+      };
+      if (team.name.length < 2) {
+        showApiNotice(new Error("שם קבוצה חייב להכיל לפחות שני תווים."));
+        return;
+      }
+      localStorage.setItem(teamKey, JSON.stringify(team));
+      state.team = team;
+      renderTeam();
+      renderChallenges();
+      clearApiNotice();
+      return;
+    }
     showSetupNotice();
     return;
   }

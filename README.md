@@ -9,16 +9,15 @@ Live site: https://geraw.github.io/Safes/
 Recommended setup:
 
 1. In GitHub, enable Pages from the `docs` folder.
-2. Create a Google Sheet for the contest.
-3. Open Extensions -> Apps Script and paste `google-apps-script/Code.gs`.
-4. In Apps Script, open Project Settings and enable "Show appsscript.json manifest file in editor".
-5. Open `appsscript.json` and paste `google-apps-script/appsscript.json`.
-6. Deploy the Apps Script as a Web App, executable as you and accessible to anyone with the link.
-7. Copy `docs/config.example.js` to `docs/config.js` and set `window.CYBER_RIDDLES_API` to the Web App URL.
+2. Create a Google Form linked to a Google Sheet.
+3. Add fields for submitted time, team name, members, challenge id, challenge title, solution, check status, compiler URL, Paiza id, output, and error.
+4. Copy `cloudflare-worker/wrangler.toml.example` to `cloudflare-worker/wrangler.toml` and fill in the Google Form `formResponse` URL and `entry.*` field ids.
+5. Deploy `cloudflare-worker/worker.js` with Cloudflare Workers.
+6. Copy `docs/config.example.js` to `docs/config.js` and set `window.CYBER_RIDDLES_CHECKER` to the Worker URL.
 
-If Google shows "This app is blocked", the account's Google Workspace policy is blocking unverified Apps Script authorization. Use a personal Gmail account for the Sheet/Apps Script, or ask the Workspace administrator to allow the app.
+The static site sends submissions to the Worker. The Worker checks the submitted input with Paiza and writes the submission plus result to the Google Form, which stores it in the linked Google Sheet.
 
-The Google Sheet stores teams and submissions. The Apps Script runs the submitted input against the C source through Paiza, then computes the leaderboard score: for each solved challenge, every solving team receives `1 / number_of_solving_teams`.
+Paiza cannot be called directly from GitHub Pages JavaScript because its API does not allow browser CORS reads. The Worker is the minimal proxy that lets the static site get the Paiza result.
 
 The page reads the challenge source and Paiza compiler links from `docs/README.md`. If you edit the root README, copy it to `docs/README.md` before publishing.
 
